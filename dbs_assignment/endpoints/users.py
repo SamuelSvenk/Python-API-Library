@@ -72,7 +72,7 @@ async def patch_user(id: str, user: PatchUser, db: Session = Depends(get_db)):
     if not to_patch:
         raise HTTPException(status_code=404, detail="User Not Found")
     
-    if user.email and db.query(UserModel).filter(UserModel.email == user.email).filter(UserModel.id != id).first():
+    if not user.is_childuser and db.query(UserModel).filter_by(email=user.email).filter(UserModel.is_childuser==False).first() is not None:
         raise HTTPException(status_code=409, detail="Email Already Taken")
     
     to_patch.name = user.name or to_patch.name
@@ -81,6 +81,7 @@ async def patch_user(id: str, user: PatchUser, db: Session = Depends(get_db)):
     to_patch.birth_date = user.birth_date or to_patch.birth_date
     to_patch.personal_identificator = user.personal_identificator or to_patch.personal_identificator
     to_patch.updated_at = datetime.now()
+    to_patch.is_childuser = user.is_childuser or to_patch.is_childuser
     db.commit()
     db.refresh(to_patch)
     return {

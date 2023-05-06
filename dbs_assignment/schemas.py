@@ -19,6 +19,7 @@ class PatchUser(BaseModel):
     birth_date: str = None
     personal_identificator: str = None
     updated_at: str = None
+    is_childuser: bool = None
 
 class CardStatus(str, postgresql.ENUM):
     active = "active"
@@ -36,6 +37,7 @@ class Card(BaseModel):
 class PatchCard(BaseModel):
     status: CardStatus = None
     updated_at: str = None
+
 
 
         
