@@ -36,6 +36,8 @@ class Card(BaseModel):
 
 class PatchCard(BaseModel):
     status: CardStatus = None
+    magstripe: str = None
+    created_at: str = None
     updated_at: str = None
 
 
