@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, APIRouter, HTTPException, Response,status
+from fastapi import FastAPI, Depends, APIRouter, HTTPException,status
 from dbs_assignment.schemas import Card, PatchCard
 from sqlalchemy.orm import Session
 from dbs_assignment.database import get_db

@@ -1,5 +1,6 @@
 from fastapi import APIRouter
-from dbs_assignment.endpoints import companions,bookings,late_departure,top_airlines,departures,destinations,load,load_week,seat_choice,air_time,top_incomes,users,cards
+from dbs_assignment.endpoints import companions,bookings,late_departure,top_airlines,departures,destinations,load,load_week,seat_choice,air_time,top_incomes,users,cards, authors
+
 
 router = APIRouter()
 router.include_router(companions.router, tags=["companions"])
@@ -15,3 +16,4 @@ router.include_router(air_time.router, tags=["air_time"])
 router.include_router(top_incomes.router, tags=["top_incomes"])
 router.include_router(users.router, tags=["users"])
 router.include_router(cards.router, tags=["cards"])
+router.include_router(authors.router, tags=["authors"])

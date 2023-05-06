@@ -20,8 +20,6 @@ class User(Base):
     is_childuser = Column(Boolean, nullable=False)
     cards = relationship("Card", back_populates="user")
 
-
-
 class Card(Base):
     __tablename__ = "cards"
     id = Column(UUID(as_uuid=True),primary_key=True, default=uuid4)
@@ -31,3 +29,14 @@ class Card(Base):
     created_at = Column(DateTime, nullable=True)
     updated_at = Column(DateTime, nullable=True)
     user = relationship("User", back_populates="cards")
+
+class Author(Base):
+    __tablename__ = "authors"
+    id = Column(UUID(as_uuid=True),primary_key=True, default=uuid4)
+    name = Column(String, nullable=True)
+    surname = Column(String , nullable=True)
+    created_at = Column(DateTime, nullable=True)
+    updated_at = Column(DateTime, nullable=True)
+
+
+    

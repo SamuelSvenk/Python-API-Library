@@ -41,5 +41,17 @@ class PatchCard(BaseModel):
     updated_at: str = None
 
 
+class Author(BaseModel):
+    id: str
+    name: str
+    surname: str
+    created_at: str = None
+    updated_at: str = None
+
+class PatchAuthor(BaseModel):
+    name: str = None
+    surname: str = None
+    created_at: str = None
+    updated_at: str = None
 
         

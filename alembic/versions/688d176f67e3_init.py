@@ -45,10 +45,20 @@ def upgrade():
         sa.Column("updated_at", sa.DateTime, nullable=True),
         )
     
+    op.create_table(
+        "authors",
+        sa.Column("id", sa.UUID(as_uuid=True),primary_key=True, default=uuid4),
+        sa.Column("name", sa.String, nullable=True),
+        sa.Column("surname", sa.String , nullable=True),
+        sa.Column("created_at", sa.DateTime, nullable=True),
+        sa.Column("updated_at", sa.DateTime, nullable=True),
+    )
+    
 
 def downgrade():
     op.drop_table("users")
     op.drop_table("cards")
+    op.drop_table("authors")
     card_status = postgresql.ENUM('active', 'inactive', 'expired', name='card_status')
     card_status.drop(op.get_bind(), checkfirst=False)
 
