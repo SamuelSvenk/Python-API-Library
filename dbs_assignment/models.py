@@ -38,5 +38,10 @@ class Author(Base):
     created_at = Column(DateTime, nullable=True)
     updated_at = Column(DateTime, nullable=True)
 
-
+class Category(Base):
+    __tablename__ = "categories"
+    id = Column(UUID(as_uuid=True),primary_key=True, default=uuid4)
+    name = Column(String, nullable=True)
+    created_at = Column(DateTime, nullable=True)
+    updated_at = Column(DateTime, nullable=True)
     
