@@ -9,10 +9,10 @@ from sqlalchemy.orm import relationship
 class User(Base):
     __tablename__ = "users"
     id = Column(UUID(as_uuid=True),primary_key=True, default=uuid4)
-    name = Column(String, unique=True, nullable=False)
-    surname = Column(String, unique=True, nullable=False)
+    name = Column(String, nullable=False)
+    surname = Column(String, nullable=False)
     email = Column(String(254), unique=True, nullable=False)
-    birth_date = Column(DateTime, unique=True, nullable=False)
+    birth_date = Column(DateTime, nullable=False)
     personal_identificator = Column(String, unique=True, nullable=False)
     created_at = Column(DateTime, nullable=True)
     updated_at = Column(DateTime, nullable=True)

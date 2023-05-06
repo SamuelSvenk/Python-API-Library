@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends, APIRouter, HTTPException, Response
+from fastapi import FastAPI, Depends, APIRouter, HTTPException
 from dbs_assignment.schemas import User, PatchUser
 from sqlalchemy.orm import Session
 from dbs_assignment.database import get_db
@@ -55,8 +55,16 @@ async def get_by_id(id: str, db: Session = Depends(get_db)):
     if user is None:
         raise HTTPException(status_code=404, detail="User Not Found")
     else:
-        return Response(status_code=200, content="User Found")
-
+        return {
+            "id": user.id,
+            "name": user.name,
+            "surname": user.surname,
+            "email": user.email,
+            "birth_date": user.birth_date,
+            "personal_identificator": user.personal_identificator,
+            "created_at": user.created_at,
+            "updated_at": user.updated_at
+        }
 
 @router.patch("/users/{id}")
 async def patch_user(id: str, user: PatchUser, db: Session = Depends(get_db)):
@@ -75,4 +83,13 @@ async def patch_user(id: str, user: PatchUser, db: Session = Depends(get_db)):
     to_patch.updated_at = datetime.now()
     db.commit()
     db.refresh(to_patch)
-    return to_patch
+    return {
+        "id": to_patch.id,
+        "name": to_patch.name,
+        "surname": to_patch.surname,
+        "email": to_patch.email,
+        "birth_date": to_patch.birth_date,
+        "personal_identificator": to_patch.personal_identificator,
+        "created_at": to_patch.created_at,
+        "updated_at": to_patch.updated_at
+    }
