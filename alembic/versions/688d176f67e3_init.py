@@ -10,6 +10,7 @@ import sqlalchemy as sa
 from uuid import uuid4
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.dialects import postgresql
+import datetime
 
 # revision identifiers, used by Alembic.
 revision = '688d176f67e3'
@@ -23,15 +24,15 @@ def upgrade():
 
     op.create_table(
         "users",
-        sa.Column("id", sa.UUID(as_uuid=True),primary_key=True, default=uuid4),
-        sa.Column("name", sa.String, nullable=False),
-        sa.Column("surname", sa.String , nullable=False),
+        sa.Column("id", sa.UUID(as_uuid=True),primary_key=True, default=uuid4, unique=True, nullable=False),
+        sa.Column("name", sa.String, nullable=True),
+        sa.Column("surname", sa.String , nullable=True),
         sa.Column("email", sa.String(254), unique=False, nullable=False),
-        sa.Column("birth_date", sa.DateTime, nullable=False),
+        sa.Column("birth_date", sa.DateTime, nullable=True),
         sa.Column("personal_identificator", sa.String, unique=True, nullable=False),
-        sa.Column("created_at", sa.DateTime, nullable=True),
-        sa.Column("updated_at", sa.DateTime, nullable=True),
-        sa.Column("is_childuser", sa.Boolean, nullable=False),
+        sa.Column("created_at", sa.types.DateTime, default=datetime.datetime.utcnow),
+        sa.Column("updated_at", sa.types.DateTime, default=datetime.datetime.utcnow),
+        sa.Column("is_childuser", sa.Boolean, nullable=True),
     )
 
     op.create_table(
