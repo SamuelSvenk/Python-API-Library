@@ -74,12 +74,12 @@ async def patch_user(id: str, user: PatchUser, db: Session = Depends(get_db)):
     
     if user.email and db.query(UserModel).filter(UserModel.email == user.email).filter(UserModel.id != id).first():
         raise HTTPException(status_code=409, detail="Email Already Taken")
-
-    to_patch.name = user.name
-    to_patch.surname = user.surname
-    to_patch.email = user.email
-    to_patch.birth_date = user.birth_date
-    to_patch.personal_identificator = user.personal_identificator
+    
+    to_patch.name = user.name or to_patch.name
+    to_patch.surname = user.surname or to_patch.surname
+    to_patch.email = user.email or to_patch.email
+    to_patch.birth_date = user.birth_date or to_patch.birth_date
+    to_patch.personal_identificator = user.personal_identificator or to_patch.personal_identificator
     to_patch.updated_at = datetime.now()
     db.commit()
     db.refresh(to_patch)
