@@ -1,14 +1,15 @@
-from fastapi import FastAPI, Depends, APIRouter, HTTPException
+from fastapi import FastAPI, Depends, APIRouter, HTTPException,status
 from dbs_assignment.schemas import User, PatchUser
 from sqlalchemy.orm import Session
 from dbs_assignment.database import get_db
 from dbs_assignment.models import User as UserModel
 from datetime import datetime
 
+
 router = APIRouter()
 
 
-@router.post("/users/")
+@router.post("/users/", status_code=status.HTTP_201_CREATED)
 async def create_user(user: User, db: Session = Depends(get_db)):
     # Je to child user?
     user_birth_date = datetime.strptime(user.birth_date, "%Y-%m-%d")
@@ -49,7 +50,7 @@ async def create_user(user: User, db: Session = Depends(get_db)):
 
 
 
-@router.get("/users/{id}")
+@router.get("/users/{id}",status_code=status.HTTP_200_OK)
 async def get_by_id(id: str, db: Session = Depends(get_db)):
     user = db.query(UserModel).filter(UserModel.id == id).first()
     if user is None:
@@ -63,10 +64,10 @@ async def get_by_id(id: str, db: Session = Depends(get_db)):
             "birth_date": user.birth_date,
             "personal_identificator": user.personal_identificator,
             "created_at": user.created_at,
-            "updated_at": user.updated_at
+            "updated_at": user.updated_at,
         }
 
-@router.patch("/users/{id}")
+@router.patch("/users/{id}",status_code=status.HTTP_200_OK)
 async def patch_user(id: str, user: PatchUser, db: Session = Depends(get_db)):
     to_patch = db.query(UserModel).filter(UserModel.id == id).first()
     if not to_patch:
