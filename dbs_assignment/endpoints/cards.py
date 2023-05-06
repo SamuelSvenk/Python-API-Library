@@ -52,7 +52,10 @@ async def get_by_id(id: str, db: Session = Depends(get_db)):
 async def patch_card(id: str, card: PatchCard, db: Session = Depends(get_db)):
     if not db.query(CardModel).filter(CardModel.id == id).first():
         raise HTTPException(status_code=404, detail="Not Found")
-    
+
+    if card.status not in ["active", "inactive", "expired"]:
+        raise HTTPException(status_code=400, detail="Bad Request")
+
     to_patch = db.query(CardModel).filter(CardModel.id == id).first()
     to_patch.magstripe = card.magstripe or to_patch.magstripe
     to_patch.status = card.status or to_patch.status

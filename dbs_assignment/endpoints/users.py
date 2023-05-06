@@ -22,7 +22,7 @@ async def create_user(user: User, db: Session = Depends(get_db)):
     # Je dospely email unikatny?
     if not user.is_childuser and db.query(UserModel).filter_by(email=user.email).filter(UserModel.is_childuser==False).first() is not None:
          raise HTTPException(status_code=409, detail="Email Already Taken")
-    
+
     to_create = UserModel(
         id=user.id,
         name=user.name,
@@ -47,7 +47,6 @@ async def create_user(user: User, db: Session = Depends(get_db)):
         "created_at": to_create.created_at,
         "updated_at": to_create.updated_at,
     }
-
 
 
 @router.get("/users/{id}",status_code=status.HTTP_200_OK)
@@ -75,7 +74,7 @@ async def patch_user(id: str, user: PatchUser, db: Session = Depends(get_db)):
     
     if not user.is_childuser and db.query(UserModel).filter_by(email=user.email).filter(UserModel.is_childuser==False).first() is not None:
         raise HTTPException(status_code=409, detail="Email Already Taken")
-    
+
     to_patch.name = user.name or to_patch.name
     to_patch.surname = user.surname or to_patch.surname
     to_patch.email = user.email or to_patch.email
