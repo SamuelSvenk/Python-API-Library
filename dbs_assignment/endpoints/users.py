@@ -11,6 +11,12 @@ router = APIRouter()
 
 @router.post("/users/", status_code=status.HTTP_201_CREATED)
 async def create_user(user: User, db: Session = Depends(get_db)):
+
+    try:
+        datetime.strptime(user.birth_date, "%Y-%m-%d")
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Bad Request")
+    
     # Je to child user?
     user_birth_date = datetime.strptime(user.birth_date, "%Y-%m-%d")
     if (datetime.now().year - user_birth_date.year) < 18:
@@ -22,6 +28,7 @@ async def create_user(user: User, db: Session = Depends(get_db)):
     # Je dospely email unikatny?
     if not user.is_childuser and db.query(UserModel).filter_by(email=user.email).filter(UserModel.is_childuser==False).first() is not None:
          raise HTTPException(status_code=409, detail="Email Already Taken")
+    
 
     to_create = UserModel(
         id=user.id,
