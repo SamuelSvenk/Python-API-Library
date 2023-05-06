@@ -21,6 +21,8 @@ depends_on = None
 def upgrade():
 
     card_status = postgresql.ENUM('active', 'inactive', 'expired', name='card_status')
+    instance_type = postgresql.ENUM('physical', 'ebook', 'audiobook', name='instance_type')
+    instance_status = postgresql.ENUM('available', 'reserved', name='instance_status')
 
     op.create_table(
         "users",
@@ -61,6 +63,62 @@ def upgrade():
         sa.Column("created_at", sa.DateTime, nullable=True),
         sa.Column("updated_at", sa.DateTime, nullable=True),
     )
+
+    op.create_table(
+        "publications",
+        sa.Column("id", sa.UUID(as_uuid=True),primary_key=True, default=uuid4),
+        sa.Column("title", sa.String, nullable=True),
+        sa.Column("authors", sa.String, nullable=True),
+        sa.Column("categories", sa.String, nullable=True),
+        sa.Column("created_at", sa.DateTime, nullable=True),
+        sa.Column("updated_at", sa.DateTime, nullable=True),
+    )
+
+    op.create_table(
+        "publications_authors",
+        sa.Column("publication_id", sa.UUID, sa.ForeignKey("publications.id"), nullable=True),
+        sa.Column("author_id", sa.UUID, sa.ForeignKey("authors.id"), nullable=True),
+
+    )
+
+    op.create_table(
+        "publications_categories",
+        sa.Column("publication_id", sa.UUID, sa.ForeignKey("publications.id"), nullable=True),
+        sa.Column("category_id", sa.UUID, sa.ForeignKey("categories.id"), nullable=True),
+    )
+
+    op.create_table(
+        "instances",
+        sa.Column("id", sa.UUID(as_uuid=True),primary_key=True, default=uuid4),
+        sa.Column("type", instance_type, nullable=False),
+        sa.Column("publisher", sa.String, nullable=True),
+        sa.Column("year", sa.Integer, nullable=True),
+        sa.Column("status", instance_status, nullable=False),
+        sa.Column("publication_id", sa.UUID, sa.ForeignKey("publications.id"), nullable=False),
+        sa.Column("created_at", sa.DateTime, nullable=True),
+        sa.Column("updated_at", sa.DateTime, nullable=True),
+    )
+
+    op.create_table(
+        "rentals",
+        sa.Column("id", sa.UUID(as_uuid=True),primary_key=True, default=uuid4),
+        sa.Column("user_id", sa.UUID, sa.ForeignKey("users.id"), nullable=False),
+        sa.Column("publication_id", sa.UUID, sa.ForeignKey("publications.id"), nullable=False),
+        sa.Column("duration", sa.Integer, nullable=True),
+        sa.Column("start_date", sa.DateTime, nullable=True),
+        sa.Column("end_date", sa.DateTime, nullable=True),
+
+    )
+    op.create_table(
+        "reservations",
+        sa.Column("id", sa.UUID(as_uuid=True),primary_key=True, default=uuid4),
+        sa.Column("user_id", sa.UUID, sa.ForeignKey("users.id"), nullable=False),
+        sa.Column("publication_id", sa.UUID, sa.ForeignKey("publications.id"), nullable=False),
+        sa.Column("created_at", sa.DateTime, nullable=True),
+        sa.Column("updated_at", sa.DateTime, nullable=True),
+    )
+
+
     
 
 def downgrade():

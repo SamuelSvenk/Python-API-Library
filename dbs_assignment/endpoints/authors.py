@@ -17,6 +17,10 @@ async def create_author(author: Author, db: Session = Depends(get_db)):
     if db.query(AuthorModel).filter(AuthorModel.name == author.name).filter(AuthorModel.surname == author.surname).first():
         raise HTTPException(status_code=409, detail="Conflict")
         
+    if db.query(AuthorModel).filter(AuthorModel.id == author.id).first():
+        raise HTTPException(status_code=409, detail="Conflict")
+    
+    
     to_create = AuthorModel(
         id=author.id,
         name=author.name,
