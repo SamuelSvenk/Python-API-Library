@@ -40,6 +40,7 @@ async def patch_card(id: str, card: PatchCard, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Not Found")
     
 
+
     to_patch = db.query(CardModel).filter(CardModel.id == id).first()
     to_patch.status = card.status
     to_patch.updated_at = datetime.now()

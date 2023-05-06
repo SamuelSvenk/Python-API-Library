@@ -36,7 +36,16 @@ async def create_user(user: User, db: Session = Depends(get_db)):
     db.add(to_create)
     db.commit()
     db.refresh(to_create)
-    return Response(status_code=201, content="Created")
+    return {
+        "id": to_create.id,
+        "name": to_create.name,
+        "surname": to_create.surname,
+        "email": to_create.email,
+        "birth_date": to_create.birth_date,
+        "personal_identificator": to_create.personal_identificator,
+        "created_at": to_create.created_at,
+        "updated_at": to_create.updated_at,
+    }
 
 
 
