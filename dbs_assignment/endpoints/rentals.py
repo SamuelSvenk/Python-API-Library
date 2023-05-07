@@ -97,3 +97,4 @@ async def get_rental(rental_id: str, db: Session = Depends(get_db)):
         "start_date": rental.start_date,
         "end_date": rental.end_date
     }
+

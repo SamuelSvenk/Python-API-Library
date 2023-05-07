@@ -6,6 +6,7 @@ from dbs_assignment.models import Reservation as ReservationModel
 from dbs_assignment.models import Instance as InstanceModel
 from dbs_assignment.models import User as UserModel
 from dbs_assignment.models import Rental as RentalModel
+from dbs_assignment.models import Publication as PublicationModel
 from datetime import datetime, timedelta
 from uuid import uuid4
 
@@ -21,25 +22,29 @@ async def create_reservation(reservation: Reservation, db: Session = Depends(get
     if not db.query(UserModel).filter(UserModel.id == reservation.user_id).first():
         raise HTTPException(status_code=404, detail="Not Found")
     
-    # check if a publication is not available if so make reservation
-    if not db.query(InstanceModel).filter(InstanceModel.publication_id == reservation.publication_id).filter(InstanceModel.status == "available").first():
-        to_create = ReservationModel(
-            id=reservation.id,
-            user_id=reservation.user_id,
-            publication_id = reservation.publication_id,
-            created_at=datetime.now(),
-        )
-        db.add(to_create)
-        db.commit()
-        db.refresh(to_create)
-        return {
-            "id": to_create.id,
-            "user_id": to_create.user_id,
-            "publication_id": to_create.publication_id,
-            "created_at": to_create.created_at,
-        }
-    else:
-        raise HTTPException(status_code=404, detail="Not Found")
+    # check ci je volna instance
+    publication = db.query(PublicationModel).filter(PublicationModel.id == reservation.publication_id).first()
+    instance = db.query(InstanceModel).filter(InstanceModel.publication_id == publication.id, InstanceModel.status == "available").first()
+    if instance:
+        raise   HTTPException(status_code=400, detail="Not Found")
+    
+    to_create = ReservationModel(
+        id=reservation.id,
+        user_id=reservation.user_id,
+        publication_id = reservation.publication_id,
+        created_at=datetime.now(),
+    )
+
+    db.add(to_create)
+    db.commit()
+    db.refresh(to_create)
+    return {
+        "id": to_create.id,
+        "user_id": to_create.user_id,
+        "publication_id": to_create.publication_id,
+        "created_at": to_create.created_at,
+    }
+ 
 
 
 @router.get("/reservations/{reservation_id}",status_code=status.HTTP_200_OK)
