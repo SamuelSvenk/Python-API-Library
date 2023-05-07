@@ -12,8 +12,12 @@ router = APIRouter()
 async def create_author(author: Author, db: Session = Depends(get_db)):
     if not author.id:
         author.id = str(uuid4())
+    else:
+        # Check na id
+        if db.query(AuthorModel).filter(AuthorModel.id == author.id).first():
+            raise HTTPException(status_code=409, detail="Conflict")
 
-        # Check na kominaciu mena a priezviska
+        # Check na kombinaciu mena a priezviska
     if db.query(AuthorModel).filter(AuthorModel.name == author.name).filter(AuthorModel.surname == author.surname).first():
         raise HTTPException(status_code=409, detail="Conflict")
         

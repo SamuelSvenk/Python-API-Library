@@ -6,7 +6,7 @@ from sqlalchemy.pool import QueuePool
 
 SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.DATABASE_USER}:{settings.DATABASE_PASSWORD}@{settings.DATABASE_HOST}:{settings.DATABASE_PORT}/{settings.DATABASE_NAME}"
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL,poolclass=QueuePool,pool_size=10,max_overflow=20, pool_pre_ping=True, pool_timeout=300)
+engine = create_engine(SQLALCHEMY_DATABASE_URL, echo=True, poolclass=QueuePool,pool_size=10,max_overflow=20, pool_pre_ping=True, pool_timeout=300)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine, expire_on_commit=False)
 

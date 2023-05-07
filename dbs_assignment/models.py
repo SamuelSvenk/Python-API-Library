@@ -78,6 +78,9 @@ class PublicationCategory(Base):
 class Instance(Base):
     __tablename__ = "instances"
     id = Column(UUID(as_uuid=True),primary_key=True, default=uuid4)
+    type = Column(postgresql.ENUM("physical", "ebook", "audiobook", name="publicationtype"), nullable=False)
+    publisher = Column(String, nullable=True)
+    year = Column(Integer, nullable=True)
     publication_id = Column(UUID, ForeignKey("publications.id"), nullable=False)
     status = Column(postgresql.ENUM("available", "reserved", name="instancestatus"), nullable=False)
     created_at = Column(DateTime, nullable=True)
@@ -88,6 +91,7 @@ class Rental(Base):
     __tablename__ = "rentals"
     id = Column(UUID(as_uuid=True),primary_key=True, default=uuid4)
     publication_id = Column(UUID, ForeignKey("publications.id"), nullable=False)
+    duration = Column(Integer, nullable=True)
     user_id = Column(UUID, ForeignKey("users.id"), nullable=False)
     start_date = Column(Date, nullable=True)
     end_date = Column(Date, nullable=True)
@@ -99,8 +103,7 @@ class Reservation(Base):
     id = Column(UUID(as_uuid=True),primary_key=True, default=uuid4)
     publication_id = Column(UUID, ForeignKey("publications.id"), nullable=False)
     user_id = Column(UUID, ForeignKey("users.id"), nullable=False)
-    start_date = Column(Date, nullable=True)
-    end_date = Column(Date, nullable=True)
+    created_at = Column(DateTime, nullable=True)
     publication = relationship("Publication", back_populates="reservations")
     user = relationship("User", back_populates="reservations")
 

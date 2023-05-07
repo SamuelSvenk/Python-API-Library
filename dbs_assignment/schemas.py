@@ -72,12 +72,21 @@ class Publication(BaseModel):
     created_at: str = None
     updated_at: str = None
 
+class InstanceStatus(str, postgresql.ENUM):
+    available = "available"
+    reserved = "reserved"
+
+class InstanceType(str, postgresql.ENUM):
+    physical = "physical"
+    ebook = "ebook"
+    audiobook = "audiobook"
+
 class Instance(BaseModel):
     id: str
-    type: str
+    type: InstanceType
     publisher: str
     year : str
-    status: str
+    status: InstanceStatus
     publication_id: str
     created_at: str = None
     updated_at: str = None

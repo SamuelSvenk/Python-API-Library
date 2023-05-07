@@ -68,8 +68,6 @@ def upgrade():
         "publications",
         sa.Column("id", sa.UUID(as_uuid=True),primary_key=True, default=uuid4),
         sa.Column("title", sa.String, nullable=True),
-        sa.Column("authors", sa.String, nullable=True),
-        sa.Column("categories", sa.String, nullable=True),
         sa.Column("created_at", sa.DateTime, nullable=True),
         sa.Column("updated_at", sa.DateTime, nullable=True),
     )
@@ -114,8 +112,7 @@ def upgrade():
         sa.Column("id", sa.UUID(as_uuid=True),primary_key=True, default=uuid4),
         sa.Column("user_id", sa.UUID, sa.ForeignKey("users.id"), nullable=False),
         sa.Column("publication_id", sa.UUID, sa.ForeignKey("publications.id"), nullable=False),
-        sa.Column("created_at", sa.DateTime, nullable=True),
-        sa.Column("updated_at", sa.DateTime, nullable=True),
+        sa.Column("created_at", sa.DateTime, nullable=True)
     )
 
 
