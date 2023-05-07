@@ -93,7 +93,7 @@ class Instance(BaseModel):
 
 class RentalStatus(str, postgresql.ENUM):
     active = "active"
-    inactive = "inactive"
+    inactive = "returned"
 
 class Rental(BaseModel):
     id: str
