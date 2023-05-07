@@ -19,6 +19,10 @@ async def create_instance(instance: Instance, db: Session = Depends(get_db)):
     # Check ci existuje publikacia
     if not db.query(PublicationModel).filter(PublicationModel.id == instance.publication_id).first():
         raise HTTPException(status_code=404, detail="Not Found")
+    
+    # check if correct status is given
+    if instance.status not in ["available", "reserved"]:
+        raise HTTPException(status_code=400, detail="Not Found")
 
     to_create = InstanceModel(
         id=instance.id,

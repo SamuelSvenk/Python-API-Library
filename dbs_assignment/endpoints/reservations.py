@@ -22,7 +22,6 @@ async def create_reservation(reservation: Reservation, db: Session = Depends(get
     if not db.query(UserModel).filter(UserModel.id == reservation.user_id).first():
         raise HTTPException(status_code=404, detail="Not Found")
     
-    print(reservation.publication_id)
     # check if a publication is not available if so make reservation
     if not db.query(InstanceModel).filter(InstanceModel.publication_id == reservation.publication_id).filter(InstanceModel.status == "available").first():
         to_create = ReservationModel(
