@@ -82,7 +82,7 @@ class Instance(Base):
     publisher = Column(String, nullable=True)
     year = Column(Integer, nullable=True)
     publication_id = Column(UUID, ForeignKey("publications.id"), nullable=False)
-    status = Column(postgresql.ENUM("available", "reserved", name="instancestatus"), nullable=False)
+    status = Column(postgresql.ENUM("available", "inactive", name="instancestatus"), nullable=False)
     created_at = Column(DateTime, nullable=True)
     updated_at = Column(DateTime, nullable=True)
     publication = relationship("Publication", back_populates="instances")

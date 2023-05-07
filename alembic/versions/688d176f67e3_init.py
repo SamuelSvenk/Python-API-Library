@@ -22,7 +22,7 @@ def upgrade():
 
     card_status = postgresql.ENUM('active', 'inactive', 'expired', name='card_status')
     instance_type = postgresql.ENUM('physical', 'ebook', 'audiobook', name='instance_type')
-    instance_status = postgresql.ENUM('available', 'reserved', name='instance_status')
+    instance_status = postgresql.ENUM('available', 'inactive', name='instance_status')
     rental_status = postgresql.ENUM('active', 'returned', name='rental_status')
 
     op.create_table(
@@ -120,12 +120,23 @@ def upgrade():
 
 
     
-
 def downgrade():
     op.drop_table("users")
     op.drop_table("cards")
     op.drop_table("authors")
     op.drop_table("categories")
+    op.drop_table("publications_authors")
+    op.drop_table("publications_categories")
+    op.drop_table("instances")
+    op.drop_table("rentals")
+    op.drop_table("reservations")
+    op.drop_table("publications")
     card_status = postgresql.ENUM('active', 'inactive', 'expired', name='card_status')
+    instance_type = postgresql.ENUM('physical', 'ebook', 'audiobook', name='instance_type')
+    instance_status = postgresql.ENUM('available', 'inactive', name='instance_status')
+    rental_status = postgresql.ENUM('active', 'returned', name='rental_status')
+    instance_type.drop(op.get_bind(), checkfirst=False)
+    instance_status.drop(op.get_bind(), checkfirst=False)
+    rental_status.drop(op.get_bind(), checkfirst=False)
     card_status.drop(op.get_bind(), checkfirst=False)
 

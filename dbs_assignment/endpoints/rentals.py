@@ -81,3 +81,19 @@ async def create_rental(rental: Rental, db: Session = Depends(get_db)):
             "start_date": to_create.start_date,
             "end_date": to_create.end_date
         }
+    
+@router.get("/rentals/{rental_id}",status_code=status.HTTP_200_OK)
+async def get_rental(rental_id: str, db: Session = Depends(get_db)):
+    if not db.query(RentalModel).filter(RentalModel.id == rental_id).first():
+        raise HTTPException(status_code=404, detail="Not Found")
+    
+    rental = db.query(RentalModel).filter(RentalModel.id == rental_id).first()
+    return {
+        "id": rental.id,
+        "user_id": rental.user_id,
+        "duration": rental.duration,
+        "status": rental.status,
+        "publication_instance_id": rental.instance_id,
+        "start_date": rental.start_date,
+        "end_date": rental.end_date
+    }
