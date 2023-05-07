@@ -22,7 +22,7 @@ async def create_rental(rental: Rental, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Not Found")
     
     # check ci je dlzka pouzicky vacsia ako 14 dni
-    if rental.duration > 14:
+    if rental.duration > 14 or rental.duration < 1:
         raise HTTPException(status_code=400, detail="Bad Request")
 
     #check ci existuje instance
