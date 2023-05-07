@@ -17,7 +17,6 @@ async def create_reservation(reservation: Reservation, db: Session = Depends(get
     if not reservation.id:
         reservation.id = str(uuid4())
 
-    
     #check ci existuje user
     if not db.query(UserModel).filter(UserModel.id == reservation.user_id).first():
         raise HTTPException(status_code=404, detail="Not Found")

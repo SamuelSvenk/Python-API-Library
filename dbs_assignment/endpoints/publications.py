@@ -29,7 +29,7 @@ async def create_publication(publication: Publication, db: Session = Depends(get
     for author in publication.authors:
         existing_author = db.query(AuthorModel).filter(AuthorModel.name == author["name"], AuthorModel.surname == author["surname"]).first()
         if existing_author is None:
-            raise HTTPException(status_code=404, detail="Not Found")
+            raise HTTPException(status_code=400, detail="Not Found")
         else:
             new_publication.authors.append(existing_author)
     
@@ -37,7 +37,7 @@ async def create_publication(publication: Publication, db: Session = Depends(get
     for category in publication.categories:
         existing_category = db.query(CategoryModel).filter(CategoryModel.name == category).first()
         if existing_category is None:
-            raise HTTPException(status_code=404, detail="Not Found")
+            raise HTTPException(status_code=400, detail="Not Found")
         else:
             new_publication.categories.append(existing_category)
 
