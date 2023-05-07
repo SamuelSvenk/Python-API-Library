@@ -13,9 +13,11 @@ router = APIRouter()
 
 @router.post("/publications/",status_code=status.HTTP_201_CREATED)
 async def create_publication(publication: Publication, db: Session = Depends(get_db)):
+    if not publication.id:
+        publication.id = str(uuid4())
     # Create a new publication model
     new_publication = PublicationModel(
-        id=uuid4(),
+        id= publication.id,
         title=publication.title,
         authors=[],
         categories=[],
@@ -42,11 +44,19 @@ async def create_publication(publication: Publication, db: Session = Depends(get
     db.add(new_publication)
     db.commit()
     db.refresh(new_publication)
+
+    category = []
+    authors = []
+    for category in new_publication.categories:
+        category.append(category.name)
+    for author in new_publication.authors:
+        authors.append({"name": author.name, "surname": author.surname})
+
     return {
         "id": new_publication.id,
         "title": new_publication.title,
-        "authors": new_publication.authors,
-        "categories": new_publication.categories,
+        "authors": authors,
+        "categories": category,
         "created_at": new_publication.created_at,
         "updated_at": new_publication.updated_at,
     }
@@ -65,4 +75,3 @@ async def get_by_id(id: str, db: Session = Depends(get_db)):
             "created_at": publication.created_at,
             "updated_at": publication.updated_at,
     }
-    
