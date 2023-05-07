@@ -15,7 +15,6 @@ async def create_instance(instance: Instance, db: Session = Depends(get_db)):
     if not instance.id:
         instance.id = str(uuid4())
     
-    print(instance.publication_id)
     # Check ci existuje publikacia
     if not db.query(PublicationModel).filter(PublicationModel.id == instance.publication_id).first():
         raise HTTPException(status_code=404, detail="Not Found")

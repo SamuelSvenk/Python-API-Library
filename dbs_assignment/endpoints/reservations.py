@@ -23,7 +23,6 @@ async def create_reservation(reservation: Reservation, db: Session = Depends(get
         raise HTTPException(status_code=404, detail="Not Found")
     
     # check ci je volna instance
-    publication = db.query(PublicationModel).filter(PublicationModel.id == reservation.publication_id).first()
     instance = db.query(InstanceModel).filter(InstanceModel.publication_id == publication.id, InstanceModel.status == "available").first()
 
     # ak je dostupna nemusim rezervovat

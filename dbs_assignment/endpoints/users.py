@@ -12,7 +12,7 @@ router = APIRouter()
 @router.post("/users/", status_code=status.HTTP_201_CREATED)
 async def create_user(user: User, db: Session = Depends(get_db)):
 
-    # Check na birth_date format
+    # Check ci je spravny format datumu
     try:
         datetime.strptime(user.birth_date, "%Y-%m-%d")
     except ValueError:
@@ -59,6 +59,7 @@ async def create_user(user: User, db: Session = Depends(get_db)):
 
 @router.get("/users/{id}",status_code=status.HTTP_200_OK)
 async def get_by_id(id: str, db: Session = Depends(get_db)):
+    
     user = db.query(UserModel).filter(UserModel.id == id).first()
     if user is None:
         raise HTTPException(status_code=404, detail="User Not Found")
