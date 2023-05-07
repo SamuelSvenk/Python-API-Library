@@ -5,7 +5,7 @@ from uuid import uuid4
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.dialects import postgresql
 from sqlalchemy.orm import relationship
-
+from sqlalchemy import CheckConstraint
 
 class User(Base):
     __tablename__ = "users"
@@ -86,17 +86,25 @@ class Instance(Base):
     created_at = Column(DateTime, nullable=True)
     updated_at = Column(DateTime, nullable=True)
     publication = relationship("Publication", back_populates="instances")
+    rentals = relationship("Rental", back_populates="instance")
 
 class Rental(Base):
     __tablename__ = "rentals"
     id = Column(UUID(as_uuid=True),primary_key=True, default=uuid4)
     publication_id = Column(UUID, ForeignKey("publications.id"), nullable=False)
+    instance_id = Column(UUID, ForeignKey("instances.id"), nullable=False)
     duration = Column(Integer, nullable=True)
+    status = Column(postgresql.ENUM("active", "returned", name="rentalstatus"), nullable=True)
     user_id = Column(UUID, ForeignKey("users.id"), nullable=False)
     start_date = Column(Date, nullable=True)
     end_date = Column(Date, nullable=True)
     publication = relationship("Publication", back_populates="rentals")
     user = relationship("User", back_populates="rentals")
+    instance = relationship("Instance", back_populates="rentals")
+
+    __table_args__ = (
+        CheckConstraint('duration <= 14', name='duration_check'),
+    )
 
 class Reservation(Base):
     __tablename__ = "reservations"

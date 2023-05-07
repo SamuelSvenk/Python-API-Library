@@ -21,16 +21,23 @@ async def create_rental(rental: Rental, db: Session = Depends(get_db)):
     if not db.query(UserModel).filter(UserModel.id == rental.user_id).first():
         raise HTTPException(status_code=404, detail="Not Found")
     
+    # check ci je dlzka pouzicky vacsia ako 14 dni
+    if rental.duration > 14:
+        raise HTTPException(status_code=400, detail="Bad Request")
+
     #check ci existuje instance
     if not db.query(InstanceModel).filter(InstanceModel.publication_id == rental.publication_id).filter(InstanceModel.status == "available").first():
         if db.query(RenservationModel).filter(RenservationModel.publication_id == rental.publication_id).first():
             reservation = db.query(RenservationModel).filter(RenservationModel.publication_id == rental.publication_id).order_by(RenservationModel.created_at).first()
             if reservation.user_id == rental.user_id:
+                instance_id = db.query(InstanceModel).filter(InstanceModel.publication_id == rental.publication_id).filter(InstanceModel.status == "available").first().id
                 to_create = RentalModel(
                     id=rental.id,
                     user_id=reservation.user_id,
                     duration=reservation.duration,
-                    publication_id=reservation.publication_id,
+                    status="active",
+                    publication_id = reservation.publication_id,
+                    instance_id = instance_id,
                     start_date=datetime.now(),
                     end_date=datetime.now() + timedelta(days=reservation.duration)
                 )
@@ -41,7 +48,8 @@ async def create_rental(rental: Rental, db: Session = Depends(get_db)):
                     "id": to_create.id,
                     "user_id": to_create.user_id,
                     "duration": to_create.duration,
-                    "publication_instance_id": to_create.publication_id,
+                    "status": to_create.status,
+                    "publication_instance_id": to_create.instance_id,
                     "start_date": to_create.start_date,
                     "end_date": to_create.end_date
                 }
@@ -50,11 +58,14 @@ async def create_rental(rental: Rental, db: Session = Depends(get_db)):
         else:
             raise HTTPException(status_code=400, detail="Not Found")
     else:
+        instance_id = db.query(InstanceModel).filter(InstanceModel.publication_id == rental.publication_id).filter(InstanceModel.status == "available").first().id
         to_create = RentalModel(
             id=rental.id,
             user_id=rental.user_id,
             duration=rental.duration,
-            publication_id=rental.publication_id,
+            status="active",
+            publication_id = rental.publication_id,
+            instance_id = instance_id,
             start_date=datetime.now(),
             end_date=datetime.now() + timedelta(days=rental.duration)
         )
@@ -65,7 +76,8 @@ async def create_rental(rental: Rental, db: Session = Depends(get_db)):
             "id": to_create.id,
             "user_id": to_create.user_id,
             "duration": to_create.duration,
-            "publication_instance_id": to_create.publication_id,
+            "status": to_create.status,
+            "publication_instance_id": to_create.instance_id,
             "start_date": to_create.start_date,
             "end_date": to_create.end_date
         }

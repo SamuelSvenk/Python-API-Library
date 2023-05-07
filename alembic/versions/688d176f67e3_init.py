@@ -23,6 +23,7 @@ def upgrade():
     card_status = postgresql.ENUM('active', 'inactive', 'expired', name='card_status')
     instance_type = postgresql.ENUM('physical', 'ebook', 'audiobook', name='instance_type')
     instance_status = postgresql.ENUM('available', 'reserved', name='instance_status')
+    rental_status = postgresql.ENUM('active', 'returned', name='rental_status')
 
     op.create_table(
         "users",
@@ -102,6 +103,8 @@ def upgrade():
         sa.Column("id", sa.UUID(as_uuid=True),primary_key=True, default=uuid4),
         sa.Column("user_id", sa.UUID, sa.ForeignKey("users.id"), nullable=False),
         sa.Column("publication_id", sa.UUID, sa.ForeignKey("publications.id"), nullable=False),
+        sa.Column("instance_id", sa.UUID, sa.ForeignKey("instances.id"), nullable=False),
+        sa.Column("status", rental_status, nullable=True),
         sa.Column("duration", sa.Integer, nullable=True),
         sa.Column("start_date", sa.DateTime, nullable=True),
         sa.Column("end_date", sa.DateTime, nullable=True),

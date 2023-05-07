@@ -91,11 +91,16 @@ class Instance(BaseModel):
     created_at: str = None
     updated_at: str = None
 
+class RentalStatus(str, postgresql.ENUM):
+    active = "active"
+    inactive = "inactive"
+
 class Rental(BaseModel):
     id: str
     user_id: str
     publication_id: str
     duration: int
+    status: RentalStatus = RentalStatus.active
     start_date: str = None
     end_date: str = None
 

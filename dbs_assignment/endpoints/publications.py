@@ -67,11 +67,18 @@ async def get_by_id(id: str, db: Session = Depends(get_db)):
     if publication is None:
         raise HTTPException(status_code=404, detail="Not Found")
     else:
+        categories = []
+        authors = []
+        for category in publication.categories:
+            categories.append(category.name)
+        for author in publication.authors:
+            authors.append({"name": author.name, "surname": author.surname})
+
         return {
             "id": publication.id,
             "title": publication.title,
-            "authors": publication.authors,
-            "categories": publication.categories,
+            "authors": authors,
+            "categories": categories,
             "created_at": publication.created_at,
             "updated_at": publication.updated_at,
     }
