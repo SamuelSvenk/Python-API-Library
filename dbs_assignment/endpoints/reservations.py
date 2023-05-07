@@ -25,9 +25,12 @@ async def create_reservation(reservation: Reservation, db: Session = Depends(get
     # check ci je volna instance
     publication = db.query(PublicationModel).filter(PublicationModel.id == reservation.publication_id).first()
     instance = db.query(InstanceModel).filter(InstanceModel.publication_id == publication.id, InstanceModel.status == "available").first()
+
+    # ak je dostupna nemusim rezervovat
     if instance:
-        raise   HTTPException(status_code=400, detail="Not Found")
+        raise HTTPException(status_code=400, detail="Not Found")
     
+    # inak rezervujem
     to_create = ReservationModel(
         id=reservation.id,
         user_id=reservation.user_id,
@@ -44,8 +47,6 @@ async def create_reservation(reservation: Reservation, db: Session = Depends(get
         "publication_id": to_create.publication_id,
         "created_at": to_create.created_at,
     }
- 
-
 
 @router.get("/reservations/{reservation_id}",status_code=status.HTTP_200_OK)
 async def get_reservation(reservation_id: str, db: Session = Depends(get_db)):

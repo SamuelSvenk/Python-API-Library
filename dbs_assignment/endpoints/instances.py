@@ -65,4 +65,3 @@ async def get_by_id(id: str, db: Session = Depends(get_db)):
             "created_at": instance.created_at,
             "updated_at": instance.updated_at,
         }
-    
