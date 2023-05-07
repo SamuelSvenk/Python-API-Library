@@ -93,14 +93,14 @@ class Instance(BaseModel):
 
 class RentalStatus(str, postgresql.ENUM):
     active = "active"
-    inactive = "returned"
+    returned = "returned"
 
 class Rental(BaseModel):
     id: str
     user_id: str
     publication_id: str
     duration: int
-    status: RentalStatus = RentalStatus.active
+    status: RentalStatus = RentalStatus
     start_date: str = None
     end_date: str = None
 
