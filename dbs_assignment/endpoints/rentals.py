@@ -6,7 +6,7 @@ from dbs_assignment.models import Rental as RentalModel
 from dbs_assignment.models import Instance as InstanceModel
 from dbs_assignment.models import Reservation as RenservationModel
 from dbs_assignment.models import User as UserModel
-from datetime import datetime
+from datetime import datetime, timedelta
 from uuid import uuid4
 
 
@@ -32,7 +32,7 @@ async def create_rental(rental: Rental, db: Session = Depends(get_db)):
                     duration=reservation.duration,
                     publication_id=reservation.publication_id,
                     start_date=datetime.now(),
-                    end_date=datetime.now()
+                    end_date=datetime.now() + timedelta(days=reservation.duration)
                 )
                 db.add(to_create)
                 db.commit()
@@ -41,7 +41,7 @@ async def create_rental(rental: Rental, db: Session = Depends(get_db)):
                     "id": to_create.id,
                     "user_id": to_create.user_id,
                     "duration": to_create.duration,
-                    "publication_id": to_create.publication_id,
+                    "publication_instance_id": to_create.publication_id,
                     "start_date": to_create.start_date,
                     "end_date": to_create.end_date
                 }
@@ -56,7 +56,7 @@ async def create_rental(rental: Rental, db: Session = Depends(get_db)):
             duration=rental.duration,
             publication_id=rental.publication_id,
             start_date=datetime.now(),
-            end_date=datetime.now()
+            end_date=datetime.now() + timedelta(days=rental.duration)
         )
         db.add(to_create)
         db.commit()
@@ -65,7 +65,7 @@ async def create_rental(rental: Rental, db: Session = Depends(get_db)):
             "id": to_create.id,
             "user_id": to_create.user_id,
             "duration": to_create.duration,
-            "publication_id": to_create.publication_id,
+            "publication_instance_id": to_create.publication_id,
             "start_date": to_create.start_date,
             "end_date": to_create.end_date
         }

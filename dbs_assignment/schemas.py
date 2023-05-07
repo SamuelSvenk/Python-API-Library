@@ -95,7 +95,7 @@ class Rental(BaseModel):
     id: str
     user_id: str
     publication_id: str
-    duration: str
+    duration: int
     start_date: str = None
     end_date: str = None
 

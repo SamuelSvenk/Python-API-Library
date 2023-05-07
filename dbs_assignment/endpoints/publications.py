@@ -45,10 +45,10 @@ async def create_publication(publication: Publication, db: Session = Depends(get
     db.commit()
     db.refresh(new_publication)
 
-    category = []
+    categories = []
     authors = []
     for category in new_publication.categories:
-        category.append(category.name)
+        categories.append(category.name)
     for author in new_publication.authors:
         authors.append({"name": author.name, "surname": author.surname})
 
@@ -56,7 +56,7 @@ async def create_publication(publication: Publication, db: Session = Depends(get
         "id": new_publication.id,
         "title": new_publication.title,
         "authors": authors,
-        "categories": category,
+        "categories": categories,
         "created_at": new_publication.created_at,
         "updated_at": new_publication.updated_at,
     }
