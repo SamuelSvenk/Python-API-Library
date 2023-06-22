@@ -1,4 +1,4 @@
-# DBS Assignment Example in Python
+# DBS Assignment in Python
 
 Description
 The final assignment of databases university course. The task was to create API for a library. Includes a POST/GET/DELETE/PATCH endpoints.
